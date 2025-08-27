@@ -1,0 +1,53 @@
+name: IaC Security with JFrog Artifactory
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  actions: read           # for detecting the Github Actions environment
+  id-token: write         # for creating OIDC tokens for signing
+  packages: write         # for uploading attestations
+  contents: read          # read the contents permission
+  security-events: write  # for uploading code scanning
+
+jobs:
+  build:
+    name: 'Build Terraform'
+    env:
+      JFROG_CLI_BUILD_NAME: 'terragoat-iac'
+      JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
+      JFROG_CLI_BUILD_PROJECT: ${{ vars.JF_PROJECT }}
+      JFROG_CLI_LOG_LEVEL: DEBUG
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: https://${{ vars.JF_URL }}/
+        with:
+          oidc-provider-name: mikeho-github
+          oidc-audience: mikeho-audience
+          version: 2.78.6
+          
+      - name: JFrog Curation Audit
+        run: |
+          jf curation-audit
+      
+      - name: Audit Source Code
+        run: |
+          #jf audit --go=true --sca --format=sarif
+          jf audit --fail=false --sast --sca --secrets --iac --format=sarif > jfrog_sast.sarif
+          jf rt upload jfrog_sast.sarif grafana-plugins-generic-local/sarif-terragoat/
+      
+      - name: Upload output to generate autofix
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: jfrog_sast.sarif
