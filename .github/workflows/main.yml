@@ -47,7 +47,7 @@ jobs:
       - name: Audit Source Code
         run: |
           #jf audit --fail=false --sast --sca --secrets --iac --format=sarif > jfrog_sast.sarif
-          jf audit --fail=false --secrets --iac --format=sarif > jfrog_sast.sarif
+          jf audit --fail=false --iac --format=sarif > jfrog_sast.sarif
           jf rt upload jfrog_sast.sarif grafana-plugins-generic-local/sarif-terragoat/
       
       - name: Upload output to generate autofix
