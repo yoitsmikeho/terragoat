@@ -38,7 +38,7 @@ jobs:
         with:
           oidc-provider-name: mikeho-github
           oidc-audience: mikeho-audience
-          version: 2.78.7
+          version: 2.77.0
           
       #- name: JFrog Curation Audit
       #  run: |
