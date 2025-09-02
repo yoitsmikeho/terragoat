@@ -38,7 +38,7 @@ jobs:
         with:
           oidc-provider-name: mikeho-github
           oidc-audience: mikeho-audience
-          version: 2.78.7
+          version: 2.78.8
           
       #- name: JFrog Curation Audit
       #  run: |
@@ -46,11 +46,11 @@ jobs:
       
       - name: Audit Source Code
         run: |
-          #jf audit --fail=false --sast --sca --secrets --iac --format=sarif > jfrog_sast.sarif
-          jf audit --fail=false --iac --format=sarif > jfrog_sast.sarif
-          cat "********-jfrog_sast.sarif-begin"
-          cat jfrog_sast.sarif
-          cat "********-jfrog_sast.sarif-end"
+          jf audit --fail=false --sast --sca --secrets --iac --format=sarif > jfrog_sast.sarif
+          #jf audit --fail=false --iac --format=sarif > jfrog_sast.sarif
+          #cat "********-jfrog_sast.sarif-begin"
+          #cat jfrog_sast.sarif
+          #cat "********-jfrog_sast.sarif-end"
           jf rt upload jfrog_sast.sarif grafana-plugins-generic-local/sarif-terragoat/
         env:
           JFROG_CLI_LOG_LEVEL: INFO
