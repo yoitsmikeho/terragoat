@@ -50,7 +50,7 @@ jobs:
           npm i --legacy-peer-deps
           cd ../../..
           #jf audit --fail=false --sast --sca --secrets --iac --format=sarif > jfrog_sast.sarif
-          jf audit --fail=false --format=sarif > jfrog_sast.sarif
+          jf audit --fail=false --ica --format=sarif > jfrog_sast.sarif
           #cat "********-jfrog_sast.sarif-begin"
           #cat jfrog_sast.sarif
           #cat "********-jfrog_sast.sarif-end"
