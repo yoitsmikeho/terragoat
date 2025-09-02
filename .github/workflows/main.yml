@@ -20,7 +20,6 @@ jobs:
     env:
       JFROG_CLI_BUILD_NAME: 'terragoat-iac'
       JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
-      #JFROG_CLI_BUILD_PROJECT: ${{ vars.JF_PROJECT }}
       JFROG_CLI_LOG_LEVEL: INFO
     runs-on: ubuntu-latest
 
@@ -39,21 +38,12 @@ jobs:
           oidc-provider-name: mikeho-github
           oidc-audience: mikeho-audience
           version: 2.78.8
-          
-      #- name: JFrog Curation Audit
-      #  run: |
-      #    jf curation-audit
       
       - name: Audit Source Code
         run: |
-          #jf audit --fail=false --sast --sca --secrets --iac --format=sarif > jfrog_sast.sarif
           jf audit --format=sarif > jfrog_sast.sarif
-          echo "*********************-jfrog_sast.sarif-start"
-          cat jfrog_sast.sarif
-          echo "*********************-jfrog_sast.sarif-end"
-          jf rt upload jfrog_sast.sarif grafana-plugins-generic-local/sarif-terragoat/
         env:
-          JFROG_CLI_LOG_LEVEL: DEBUG
+          JFROG_CLI_LOG_LEVEL: INFO
       
       - name: Upload output to generate autofix
         uses: github/codeql-action/upload-sarif@v3
